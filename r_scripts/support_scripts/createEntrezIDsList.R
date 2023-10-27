@@ -1,7 +1,7 @@
 ##### installazione pacchetti
 # BiocManager::install(c("clusterProfiler"))
 
-## Rscript <createEntrezIDs> --genesymbols <sample_path> --outfile outf --specie <species> --level <level>
+## Rscript <createEntrezIDs> --projectfolder <project base folder path>--genesymbols <sample_path> -n <column_name> --outfolder <outf> --species <species> --level <level>
 
 library("dplyr")
 library("mygene")
@@ -18,16 +18,14 @@ option_list <- list(
               help="project base folder"),
   make_option(c("-g", "--genesymbols"), action="store", type="character",
               help="input file (one column of gene symbols)"),
+  make_option(c("-n", "--columnname"), action="store", type="character",
+              help="name of column of gene symbols in the input file"),
   make_option(c("-o", "--outfolder"), action="store", default="outfiles",
               help="output csv file prefix [default=outfile]"),
   make_option(c("-s", "--species"), action="store", default='human', type="character",
               help="species (between 'Anopheles, Arabidopsis, Bovine, Worm, Canine, Fly, Zebrafish, Ecoli_strain_K12, Ecoli_strain_Sakai, Chicken, Human, Mouse, Rhesus, Malaria, Chimp, Rat, Yeast, Pig, Xenopus') [default=human]"),
   make_option(c("-l", "--level"), action="store", default=3, type="integer",
               help="set level of GO depth [default=3]")
-#  make_option(c("-n", "--count_lines"), action="store_true", default=FALSE,
-#              help="Count the line numbers [default]"),
-#  make_option(c("-f", "--factor"), type="integer", default=3,
-#              help="Multiply output by this number [default %default]")
 )
 
 parser <- OptionParser(usage="%prog [options] ", option_list=option_list)
@@ -35,12 +33,14 @@ args <- parse_args(parser, positional_arguments = TRUE)
 opt <- args$options
 prjfolder = opt$projectfolder
 infilename = opt$genesymbols
+column = opt$columnname
 species = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", opt$species, perl = TRUE) ## make sure that the first letter is uppercase
 outfolder = opt$outfolder
 level = opt$level
-# 
+#
 # prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
 # infilename = "post_gwas/gwas_prolificity_sheep_genes.csv"
+# column = "uniprot_gn_symbol"
 # species = "Sheep"
 # outfile = "post_gwas/"
 # level = 3
@@ -78,10 +78,10 @@ switch(species,
 
 
 # carico dal file i genesymbols
-df <- fread(file = infilename)
+fname = file.path(prjfolder, infilename)
+df <- fread(file = fname)
 
-geneSymbolList = df$uniprot_gn_symbol
-geneSymbolList = geneSymbolList[geneSymbolList != ""]
+geneSymbolList <- df |> select({{column}}) |> filter(if_any(everything(), ~ .x != ""))
 
 print("List of gene symbols")
 print(geneSymbolList)
