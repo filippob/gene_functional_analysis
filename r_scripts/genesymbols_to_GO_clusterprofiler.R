@@ -43,7 +43,7 @@ level = opt$level
 
 prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
 infilename = "post_gwas/Sheep_EntrezIDs"
-specie="Sheep"
+species="Sheep"
 outfolder ="post_gwas"
 level=3
 
@@ -127,14 +127,14 @@ outfileCC <- file.path(prjfolder, outfolder, paste(species,"_GO.CC",sep = ""))
 fwrite(x = ggoCC_sort, file = outfileCC)
 
 # barplot of GO terms
-fileName <- file.path(prjfolder, outfolder,paste(species, "_GO.CC_barplot.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder,paste(species, "_GO.CC_barplot.png", sep=""))
+png(fileName)
 barplot(ggoCC,drop=TRUE,showCategory=25)
 dev.off()
 
 # wordcloud of GO terms
-fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.CC_wordcloud.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.CC_wordcloud.png", sep=""))
+png(fileName)
 wordcloud(words = ggoCC@result$Description, freq = ggoCC@result$Count, min.freq = 1)
 dev.off()
 
@@ -149,14 +149,14 @@ ggoBP_sort <- ggoBP@result[order(ggoBP@result$Count,decreasing=TRUE),]
 outfileBP <- file.path(prjfolder, outfolder, paste(species,"_GO.BP",sep = ""))
 fwrite(x=ggoBP_sort, file = outfileBP)
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.BP_barplot.pdf", sep=""))
-pdf(fileName)
-barplot(ggoBP,drop=TRUE,showCategory=25)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.BP_barplot.png", sep=""))
+png(fileName)
+barplot(ggoBP,drop=TRUE,showCategory=20)
 dev.off()
 
 # wordcloud of GO terms
-fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.BP_wordcloud.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.BP_wordcloud.png", sep=""))
+png(fileName)
 wordcloud(words = ggoBP@result$Description, freq = ggoBP@result$Count, min.freq = 1)
 dev.off()
 
@@ -171,14 +171,14 @@ ggoMF_sort <- ggoMF@result[order(ggoMF@result$Count,decreasing=TRUE),]
 outfileMF <- file.path(prjfolder, outfolder, paste(species,"_GO.MF",sep = ""))
 fwrite(x=ggoMF_sort, file = outfileMF)
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_barplot.pdf", sep=""))
-pdf(fileName)
-barplot(ggoMF,drop=TRUE,showCategory=25)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_barplot.png", sep=""))
+png(fileName)
+barplot(ggoMF,drop=TRUE,showCategory=20)
 dev.off()
 
 # wordcloud of GO terms
-fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_wordcloud.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_wordcloud.png", sep=""))
+png(fileName)
 wordcloud(words = ggoMF@result$Description, freq = ggoMF@result$Count, min.freq = 1)
 dev.off()
 
@@ -198,13 +198,13 @@ egoCC_sort <- egoCC@result[order(egoCC@result$Count,decreasing=TRUE),]
 outfile_egoCC <- file.path(prjfolder, outfolder, paste(species,"_eGO.CC",sep = ""))
 fwrite(x=egoCC_sort, file = outfile_egoCC)
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.CC_barplot.pdf", sep=""))
-pdf(fileName)
-barplot(egoCC,drop=TRUE,showCategory=25)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.CC_barplot.png", sep=""))
+png(fileName)
+barplot(egoCC,drop=TRUE,showCategory=20)
 dev.off()
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.CC_dotplot.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.CC_dotplot.png", sep=""))
+png(fileName)
 dotplot(object = egoCC, x = "GeneRatio", color="p.adjust")
 dev.off()
 
@@ -222,13 +222,13 @@ egoBP_sort <- egoBP@result[order(egoBP@result$Count,decreasing=TRUE),]
 outfile_egoBP <- file.path(prjfolder, outfolder, paste(species,"_eGO.BP",sep = ""))
 fwrite(x=egoBP_sort, file = outfile_egoBP)
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.BP_barplot.pdf", sep=""))
-pdf(fileName)
-barplot(egoBP,drop=TRUE,showCategory=25)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.BP_barplot.png", sep=""))
+png(fileName)
+barplot(egoBP,drop=TRUE,showCategory=20)
 dev.off()
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.BP_dotplot.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.BP_dotplot.png", sep=""))
+png(fileName)
 dotplot(egoBP,color="qvalue")
 dev.off()
 
@@ -246,25 +246,25 @@ egoMF_sort <- egoMF@result[order(egoMF@result$Count,decreasing=TRUE),]
 outfile_egoMF <- file.path(prjfolder, outfolder, paste(species,"_eGO.MF",sep = ""))
 fwrite(x=egoMF_sort, file = outfile_egoMF)
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_barplot.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_barplot.png", sep=""))
+png(fileName)
 barplot(egoMF,drop=TRUE,showCategory=25)
 dev.off()
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_dotplot.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_dotplot.png", sep=""))
+png(fileName)
 dotplot(egoMF,color="p.adjust")
 dev.off()
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_map.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_map.png", sep=""))
+png(fileName)
 doseplot::enrichMap(egoMF,n=25,vertex.label.font = 0.25)
 dev.off()
 
 # emapplot(egoMF)
 
-fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_graph.pdf", sep=""))
-pdf(fileName)
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_graph.png", sep=""))
+png(fileName)
 plotGOgraph(egoMF)
 dev.off()
 
