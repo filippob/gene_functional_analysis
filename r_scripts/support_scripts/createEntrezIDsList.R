@@ -1,7 +1,7 @@
 ##### installazione pacchetti
 # BiocManager::install(c("clusterProfiler"))
 
-## Rscript <createEntrezIDs> --projectfolder <project base folder path>--genesymbols <sample_path> -n <column_name> --outfolder <outf> --species <species> --level <level>
+## Rscript <createEntrezIDs> --projectfolder <project base folder path> --genesymbols <sample_path> -n <column_name> --outfolder <outf> --species <species> --level <level>
 
 library("dplyr")
 library("mygene")
