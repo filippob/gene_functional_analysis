@@ -40,6 +40,7 @@ gene_alias = opt$alias
 # gene_alias = "uniprot_gn_symbol"
 
 ## select species
+print(paste("selected species is", species))
 switch(species, 
        Anopheles={library("org.Ag.eg.db")},
        Arabidopsis={library("org.At.tair.db")},
@@ -72,6 +73,7 @@ writeLines(" - reading the data")
 fname = file.path(prjfolder, infilename)
 genes <- fread(file=fname)
 
+print(paste("selected gene alias is", gene_alias))
 gene_list <- genes |>
   dplyr::pull(!!gene_alias) |>
   unique()
@@ -82,8 +84,8 @@ gene_list <- gene_list[vec]
 writeLines(" - selecting mart object")
 mart <- useMart(biomart = "ensembl", dataset = dataset)
 
+## BIOMART
 writeLines(" - querying biomaRt ...")
-
 annotated <- getBM(
   attributes = c('ensembl_gene_id', 'external_gene_name', 'uniprot_gn_symbol', 'description'), 
   filters = gene_alias,
@@ -93,6 +95,7 @@ annotated <- getBM(
 writeLines(" - writing out results")
 
 outfile <- file.path(prjfolder, outfolder, paste(species,"_functional_annotations",sep = ""))
+print(paste("writing out to file", outfile))
 fwrite(x=annotated, file = outfile)
 
 print("DONE!!")
