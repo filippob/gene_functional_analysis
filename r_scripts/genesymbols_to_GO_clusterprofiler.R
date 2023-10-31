@@ -41,11 +41,11 @@ species = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", opt$species, perl = 
 outfolder = opt$outfolder
 level = opt$level
 
-prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
-infilename = "post_gwas/Sheep_EntrezIDs"
-species="Sheep"
-outfolder ="post_gwas"
-level=3
+# prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
+# infilename = "post_gwas/Sheep_EntrezIDs"
+# species="Sheep"
+# outfolder ="post_gwas"
+# level=3
 
 
 # source("https://bioconductor.org/biocLite.R")
