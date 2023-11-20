@@ -1,4 +1,4 @@
-# Rscript <genesymbols_to_GO_clusterprofiler> --projectfolder <project base folder path> --gene_names <geneEntrezList> --outfolder <outfolder> --species <species> --alias <alias> 
+# Rscript <script_name> --projectfolder <project base folder path> --gene_names <geneEntrezList> --outfolder <outfolder> --species <species> --alias <alias> 
 
 library("AnnotationHub")
 library("data.table")
@@ -33,11 +33,12 @@ species = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", opt$species, perl = 
 outfolder = opt$outfolder
 gene_alias = opt$alias
 
-# prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
-# infilename = "post_gwas/gwas_prolificity_sheep_genes.csv"
-# species="Sheep"
-# outfolder ="post_gwas"
-# gene_alias = "uniprot_gn_symbol"
+
+prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
+infilename = "post_gwas/gwas_prolificity_sheep_genes.csv"
+species="Goat"
+outfolder ="post_gwas"
+gene_alias = "uniprot_gn_symbol"
 
 ## select species
 print(paste("selected species is", species))
@@ -82,7 +83,9 @@ vec <- (gene_list != "")
 gene_list <- gene_list[vec]
 
 writeLines(" - selecting mart object")
+## if the ensembl site is not responsive, you can try using a mirror (see below)
 mart <- useMart(biomart = "ensembl", dataset = dataset)
+# mart <- useMart(biomart = "ensembl", dataset = dataset, host="useast.ensembl.org")
 
 ## BIOMART
 writeLines(" - querying biomaRt ...")
