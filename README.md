@@ -18,7 +18,7 @@ GO terms are organized in a **directed acyclic graph** (DAG) (edges between term
 We can investigate biological processes (BP), molecular functions (MF), and cellular components (CC) associated with a set of genes.
 
 Over Representation Analysis (ORA) [Boyle et al. 2004](https://academic.oup.com/bioinformatics/article/20/18/3710/202612) is used to determine whether GO terms (or pathways) are **over-represented** (**= enriched**) in a gene list (e.g. from GWAS).
-The **p-value** is calculated from the **hypergeometric distribution**:
+The **p-value** is calculated from the **hypergeometric distribution** (distribution of 'successes' *with replacement*):
 
 $$
 \text{p-value} = 1- \sum_{i=0}^{k-1} \frac{{M\choose i} \cdot {N-M\choose n-i}}{{N\choose n}}
