@@ -45,12 +45,12 @@ outfolder = opt$outfolder
 level = opt$level
 color = opt$color
 
-prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
-infilename = "post_gwas/Sheep_EntrezIDs"
-species="Sheep"
-outfolder ="post_gwas"
-level=3
-color="pvalue" # "p.adjust", "pvalue", "qvalue"
+# prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
+# infilename = "post_gwas/Sheep_EntrezIDs"
+# species="Sheep"
+# outfolder ="post_gwas"
+# level=3
+# color="pvalue" # "p.adjust", "pvalue", "qvalue"
 
 
 # source("https://bioconductor.org/biocLite.R")

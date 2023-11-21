@@ -12,7 +12,6 @@ library("ggplot2")
 library("mygene")
 
 
-
 ####### parsing dei parametri 
 library(optparse)
 option_list <- list(
@@ -48,6 +47,7 @@ level=opt$level
 # level=3
 
 #source("https://bioconductor.org/biocLite.R")
+print(paste("selected species is", species))
 switch(species, 
        Anopheles={library("org.Ag.eg.db")},
        Arabidopsis={library("org.At.tair.db")},
@@ -68,6 +68,7 @@ switch(species,
        Yeast={library("org.Sc.sgd.db")},
        Pig={library("org.Ss.eg.db");orgDB="org.Ss.eg.db";taxonomy=9823},
        Xenopus={library("org.Xl.eg.db")},
+       Goat = {taxonomy = 9925 ;sci_name = "Capra hircus"; dataset = "chircus_gene_ensembl"},
        Sheep = {taxonomy = 9940; sci_name = "Ovis aries"; keggCode="oas"},
        {                    # altrimenti ....
          stop("Specify one of this --specie options: Anopheles, Arabidopsis, Bovine, Worm, Canine, Fly, Zebrafish, Ecoli_strain_K12, Ecoli_strain_Sakai, Chicken, Human, Mouse, Rhesus, Malaria, Chimp, Rat, Yeast, Pig, Xenopus", call.=FALSE)
@@ -77,15 +78,13 @@ switch(species,
 # carico dal file le gene Entrez IDs
 fname = file.path(prjfolder, infilename)
 entrezIDs <- fread(file=fname)
-geneEntrezList <- as.character(entrezIDs$geneEntrezList)
+geneEntrezList <- unique(as.character(entrezIDs$geneEntrezList))
 
 print("List of Entrez Gene Codes")
 print(geneEntrezList)
 
-
 ############## ora faccio la Kegg enrichment ###########
-
-kk <- enrichKEGG(gene         = as.character(geneEntrezList),
+kk <- enrichKEGG(gene         = geneEntrezList,
                  organism     = keggCode,  # calls the annotation db
                  pvalueCutoff = 0.5,
                  qvalueCutoff = 0.65)
