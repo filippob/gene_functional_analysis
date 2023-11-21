@@ -18,6 +18,7 @@
 library("plyr")
 library("dplyr")
 library("RCurl")
+library("stringr")
 library("biomaRt")
 library("ggplot2")
 #library("tidyverse")
@@ -45,6 +46,7 @@ if (length(args) >= 1) {
     outfile = "post_gwas/gwas_prolificity_sheep_genes.csv",
     ensembl_genome = "oaries_gene_ensembl",
     biomart_db = "ensembl",
+    mirror_db = "asia.ensembl.org", ## e.g. useast.ensembl.org
     window = 50000,
     species = 'sheep',
     force_overwrite = FALSE
@@ -61,6 +63,7 @@ print(paste("base folder is:", config$basefolder))
 print(paste("input file is:", config$inpfile))
 print(paste("output file is:", config$outfile))
 print(paste("biomart database:", config$biomart_db))
+if (str_trim(config$mirror_db) != "") print(paste("you are using the following biomart mirror database:", config$mirror_db)) 
 print(paste("ensembl dataset:", config$ensembl_genome))
 print(paste("window (bps):", config$window))
 
@@ -78,7 +81,14 @@ datasets <- biomaRt::listDatasets(ensembl, verbose = TRUE) # show all the possib
 print(head(datasets))
 
 # ensembl <- useEnsembl(biomart = "ensembl", dataset = "cfamiliaris_gene_ensembl")
-ensembl = biomaRt::useEnsembl(biomart=config$biomart_db, dataset=config$ensembl_genome)
+if (str_trim(config$mirror_db) == "") {
+	print("using default biomart ensembl database")
+	ensembl = biomaRt::useEnsembl(biomart=config$biomart_db, dataset=config$ensembl_genome)
+} else {
+	print(paste("using the following mirror database:", config$mirror_db))
+	ensembl = biomaRt::useEnsembl(biomart=config$biomart_db, dataset=config$ensembl_genome, host="useast.ensembl.org")
+}
+
 print(ensembl)
 
 ####################################################
