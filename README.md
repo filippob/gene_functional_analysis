@@ -9,3 +9,23 @@ Therefore, there are usually multiple ways to do the same thing, and there may b
 We will try to document and comment steps, operations and scripts in the best possible way, trying to trace as much as possible scripts that must follow in a logical succession of steps.
 
 Details can be found in our [wiki](https://github.com/filippob/gene_functional_analysis/wiki/)
+
+### GO and pathway functional enrichment analysis
+
+A gene set (e.g. from the results of GWAS for a specific phenotype like a disease) is a collection of genes that are supposed to be functionally related. 
+
+GO terms are organized in a **directed acyclic graph** (DAG) (edges between terms represent parent-child relationship).
+Get biological processes (BP), molecular functions (MF), and cellular components (CC) associated with a set of genes
+
+
+### KEGG pathways
+
+Collection of pathways of molecular interaction and reaction networks, for a wide range of biochemical processes/categories:
+
+1. Metabolism
+2. Genetic information processing
+3. Environmental information processing
+4. Cellular processes
+5. Organismal systems
+6. Human diseases
+7. Drug development.
