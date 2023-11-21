@@ -24,6 +24,10 @@ $$
 \text{p-value} = 1- \sum_{i=0}^{k-1} \frac{{M\choose i} \cdot {N-M\choose n-i}}{{N\choose n}}
 $$
 
+where $N$ is the number of background genes, $M < N$ is the n. of genes in $[N]$ that are annotated $n$ is the size of the target list of genes,
+and $k$ is the n. of genes in our list that are annotated.
+
+
 ### KEGG pathways
 
 Collection of pathways of molecular interaction and reaction networks, for a wide range of biochemical processes/categories:
