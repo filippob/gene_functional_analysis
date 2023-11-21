@@ -21,7 +21,7 @@ Over Representation Analysis (ORA) [Boyle et al. 2004](https://academic.oup.com/
 The **p-value** is calculated from the **hypergeometric distribution**:
 
 $$
-\text{p-value} = 1- \sum \frac{\choose{M}{i}}{N}
+\text{p-value} = 1- \sum \frac{{M \choose i}}{N}
 $$
 
 ### KEGG pathways
