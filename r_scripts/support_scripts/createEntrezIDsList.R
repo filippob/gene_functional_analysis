@@ -38,13 +38,13 @@ species = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", opt$species, perl = 
 outfolder = opt$outfolder
 level = opt$level
 #
-# prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
-# infilename = "post_gwas/gwas_prolificity_sheep_genes.csv"
-# column = "uniprot_gn_symbol"
-# species = "Sheep"
-# outfile = "post_gwas/"
-# level = 3
-# taxonomy = 9940 ## sheep
+prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
+infilename = "post_gwas/gwas_prolificity_sheep_genes.csv"
+column = "uniprot_gn_symbol"
+species = "Sheep"
+outfile = "post_gwas/"
+level = 3
+taxonomy = 9940 ## sheep
 
 
 # source("https://bioconductor.org/biocLite.R")
@@ -82,6 +82,7 @@ fname = file.path(prjfolder, infilename)
 df <- fread(file = fname)
 
 geneSymbolList <- df |> select({{column}}) |> filter(if_any(everything(), ~ .x != ""))
+geneSymbolList = unique(geneSymbolList) ## removing duplicates
 
 print("List of gene symbols")
 print(geneSymbolList)
