@@ -15,8 +15,14 @@ Details can be found in our [wiki](https://github.com/filippob/gene_functional_a
 A gene set (e.g. from the results of GWAS for a specific phenotype like a disease) is a collection of genes that are supposed to be functionally related. 
 
 GO terms are organized in a **directed acyclic graph** (DAG) (edges between terms represent parent-child relationship).
-Get biological processes (BP), molecular functions (MF), and cellular components (CC) associated with a set of genes
+We can investigate biological processes (BP), molecular functions (MF), and cellular components (CC) associated with a set of genes.
 
+Over Representation Analysis (ORA) [Boyle et al. 2004](https://academic.oup.com/bioinformatics/article/20/18/3710/202612) is used to determine whether GO terms (or pathways) are **over-represented** (**= enriched**) in a gene list (e.g. from GWAS).
+The **p-value** is calculated from the **hypergeometric distribution**:
+
+$$
+\text{p-value} = 1- \sum \frac{\choose{M}{i}}{N}
+$$
 
 ### KEGG pathways
 
