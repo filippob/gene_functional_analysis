@@ -25,7 +25,7 @@ $$
 $$
 
 where $N$ is the number of background genes, $M < N$ is the n. of genes in $[N]$ that are annotated $n$ is the size of the target list of genes,
-and $k$ is the n. of genes in our list that are annotated.
+and $k < n$ is the n. of genes in our list that are annotated.
 
 
 ### KEGG pathways
