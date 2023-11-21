@@ -7,6 +7,7 @@ library("magrittr")
 library("optparse")
 library("ggplot2")
 library("biomaRt")
+library("stringr")
 
 ####### parsing dei parametri 
 
@@ -17,6 +18,8 @@ option_list <- list(
               help="input file (one columns of gene Entrez IDs, Ensembl IDs and gene symbols)"),
   make_option(c("-o", "--outfolder"), action="store", default="outfiles",
               help="output folder (path to, relative to project folder) [default=outfiles]"),
+  make_option(c("-m", "--mirror"), action="store", default="",
+              help="mirror biomart databse (e.g. asia.ensembl.org) [default='']"),
   make_option(c("-s", "--species"), action="store", default='human', type="character",
               help="species (between 'Anopheles, Arabidopsis, Bovine, Worm, Canine, Fly, Zebrafish, Ecoli_strain_K12, Ecoli_strain_Sakai, Chicken, Human, Mouse, Rhesus, Malaria, Chimp, Rat, Yeast, Pig, Xenopus') [default=human]"),
   make_option(c("-l", "--alias"), action="store", default="ensembl_gene_id", type="character",
@@ -32,6 +35,7 @@ infilename = opt$gene_names
 species = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", opt$species, perl = TRUE) ## make sure that the first letter is uppercase
 outfolder = opt$outfolder
 gene_alias = opt$alias
+mirror_db = opt$mirror # (e.g. "asia.ensembl.org")
 
 
 prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
@@ -39,6 +43,7 @@ infilename = "post_gwas/gwas_prolificity_sheep_genes.csv"
 species="Goat"
 outfolder ="post_gwas"
 gene_alias = "uniprot_gn_symbol"
+mirror_db = "useast.ensembl.org"
 
 ## select species
 print(paste("selected species is", species))
@@ -84,8 +89,18 @@ gene_list <- gene_list[vec]
 
 writeLines(" - selecting mart object")
 ## if the ensembl site is not responsive, you can try using a mirror (see below)
-mart <- useMart(biomart = "ensembl", dataset = dataset)
+# mart <- useMart(biomart = "ensembl", dataset = dataset)
 # mart <- useMart(biomart = "ensembl", dataset = dataset, host="useast.ensembl.org")
+
+# ensembl <- useEnsembl(biomart = "ensembl", dataset = "cfamiliaris_gene_ensembl")
+if (str_trim(mirror_db) == "") {
+  print("using default biomart ensembl database")
+  mart <- useMart(biomart = "ensembl", dataset = dataset)
+} else {
+  print(paste("using the following mirror database:", mirror_db))
+  mart = useMart(biomart = "ensembl", dataset = dataset, host=mirror_db)
+}
+
 
 ## BIOMART
 writeLines(" - querying biomaRt ...")
