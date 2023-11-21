@@ -4,17 +4,18 @@
 # 
 # BiocManager::install("clusterProfiler")
 
-# Rscript <genesymbols_to_GO_clusterprofiler> --projectfolder <project base folder path> --entrez_ids <geneEntrezList> --outfolder <outfolder> --species <species> --level <level> 
+# Rscript <genesymbols_to_GO_clusterprofiler> --projectfolder <project base folder path> --entrez_ids <geneEntrezList> --outfolder <outfolder> --species <species> --level <level> --color <variable_to_color_plots>
   
 library("clusterProfiler") ## v.3.18.0
 library("AnnotationHub")
 library("data.table")
 library("wordcloud")
+library("doseplot")
 library("magrittr")
 library("optparse")
 library("ggplot2")
 library("mygene")
-library("doseplot")
+library("topGO")
 
 ####### parsing dei parametri 
 
@@ -23,6 +24,8 @@ option_list <- list(
               help="project base folder"),
   make_option(c("-e", "--entrez_ids"), action="store", type="character",
               help="input file (one column of gene Entrez IDs)"),
+  make_option(c("-c", "--color"), action="store", type="character", default="pvalue",
+              help="variable to use for plots (pvalue [default], p.adjust, qvalue)"),
   make_option(c("-o", "--outfolder"), action="store", default="outfiles",
               help="output folder (path to, relative to project folder) [default=outfiles]"),
   make_option(c("-s", "--species"), action="store", default='human', type="character",
@@ -40,16 +43,19 @@ infilename = opt$entrez_ids
 species = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", opt$species, perl = TRUE) ## make sure that the first letter is uppercase
 outfolder = opt$outfolder
 level = opt$level
+color = opt$color
 
-# prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
-# infilename = "post_gwas/Sheep_EntrezIDs"
-# species="Sheep"
-# outfolder ="post_gwas"
-# level=3
+prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
+infilename = "post_gwas/Sheep_EntrezIDs"
+species="Sheep"
+outfolder ="post_gwas"
+level=3
+color="pvalue" # "p.adjust", "pvalue", "qvalue"
 
 
 # source("https://bioconductor.org/biocLite.R")
 # if the org.db of the species of interest has not been installed via biocLite(), you need to do so, otherwise the script will fail
+print(paste("selected species is", species))
 switch(species, 
        Anopheles={library("org.Ag.eg.db")},
        Arabidopsis={library("org.At.tair.db")},
@@ -70,6 +76,8 @@ switch(species,
        Yeast={library("org.Sc.sgd.db")},
        Pig={library("org.Ss.eg.db");orgDB="org.Ss.eg.db";taxonomy=9823},
        Xenopus={library("org.Xl.eg.db")},
+       enopus={library("org.Xl.eg.db")},
+       Goat = {taxonomy = 9925 ;sci_name = "Capra hircus"; dataset = "chircus_gene_ensembl"},
        Sheep = {taxonomy = 9940; sci_name = "Ovis aries"},
        {                    # altrimenti ....
          stop("Specify one of this --specie options: Anopheles, Arabidopsis, Bovine, Worm, Canine, Fly, Zebrafish, Ecoli_strain_K12, Ecoli_strain_Sakai, Chicken, Human, Mouse, Rhesus, Malaria, Chimp, Rat, Yeast, Pig, Xenopus", call.=FALSE)
@@ -81,7 +89,7 @@ switch(species,
 # carico dal file le gene Entrez IDs
 fname = file.path(prjfolder, infilename)
 entrezIDs <- fread(file=fname)
-geneEntrezList <- as.character(entrezIDs$geneEntrezList)
+geneEntrezList <- unique(as.character(entrezIDs$geneEntrezList))
 
 print("List of Entrez Gene Codes")
 print(geneEntrezList)
@@ -106,6 +114,7 @@ if (!(species %in% available_species)) {
   # Oaries <- ah[["AH111977"]]
 } else { org_db = orgDB}
 
+print(org_db)
 
 ############## ora faccio la GO classification ###########
 
@@ -119,9 +128,10 @@ print("GO terms - CC")
 ggoCC <- groupGO(gene     = geneEntrezList,
                  OrgDb    = org_db, # calls the annotation db
                  ont      = "CC",      # cellular component
-                 level    = level,         # level requested
+                 level    = 3,         # level requested
                  readable = TRUE)
 
+## The Gene Ratio indicates the number of genes in the input list which refer to each specific GO term
 ggoCC_sort <- ggoCC@result[order(ggoCC@result$Count, decreasing=TRUE),]
 outfileCC <- file.path(prjfolder, outfolder, paste(species,"_GO.CC",sep = ""))
 fwrite(x = ggoCC_sort, file = outfileCC)
@@ -129,7 +139,7 @@ fwrite(x = ggoCC_sort, file = outfileCC)
 # barplot of GO terms
 fileName <- file.path(prjfolder, outfolder,paste(species, "_GO.CC_barplot.png", sep=""))
 png(fileName)
-barplot(ggoCC,drop=TRUE,showCategory=25)
+barplot(ggoCC, drop=TRUE, showCategory = 12, order = TRUE)
 dev.off()
 
 # wordcloud of GO terms
@@ -151,7 +161,7 @@ fwrite(x=ggoBP_sort, file = outfileBP)
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.BP_barplot.png", sep=""))
 png(fileName)
-barplot(ggoBP,drop=TRUE,showCategory=20)
+barplot(ggoBP, drop=TRUE, showCategory=12, order = TRUE)
 dev.off()
 
 # wordcloud of GO terms
@@ -173,7 +183,7 @@ fwrite(x=ggoMF_sort, file = outfileMF)
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_barplot.png", sep=""))
 png(fileName)
-barplot(ggoMF,drop=TRUE,showCategory=20)
+barplot(ggoMF,drop=TRUE, showCategory=12, order = TRUE)
 dev.off()
 
 # wordcloud of GO terms
@@ -186,12 +196,12 @@ dev.off()
 
 # calcolo ed esporto i Cellular Component
 egoCC <- enrichGO(
-  gene=geneEntrezList,
-  OrgDb=org_db,      # calls the annotation db
-  pvalueCutoff=0.5,     
-  qvalueCutoff=0.75, 
+  gene = geneEntrezList,
+  OrgDb = org_db,      # calls the annotation db
+  pvalueCutoff = 0.50,     
+  qvalueCutoff = 0.50, 
   ont = "CC",           
-  readable=TRUE
+  readable = TRUE
 )
 
 egoCC_sort <- egoCC@result[order(egoCC@result$Count,decreasing=TRUE),]
@@ -199,13 +209,13 @@ outfile_egoCC <- file.path(prjfolder, outfolder, paste(species,"_eGO.CC",sep = "
 fwrite(x=egoCC_sort, file = outfile_egoCC)
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.CC_barplot.png", sep=""))
-png(fileName)
-barplot(egoCC,drop=TRUE,showCategory=20)
+png(fileName, height = 800)
+barplot(egoCC, drop=TRUE, order=TRUE, col=color, showCategory = 10)
 dev.off()
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.CC_dotplot.png", sep=""))
 png(fileName)
-dotplot(object = egoCC, x = "GeneRatio", color="p.adjust")
+dotplot(object = egoCC, x = "GeneRatio", color=color)
 dev.off()
 
 # calcolo ed esporto i Biological Processes
@@ -224,12 +234,12 @@ fwrite(x=egoBP_sort, file = outfile_egoBP)
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.BP_barplot.png", sep=""))
 png(fileName)
-barplot(egoBP,drop=TRUE,showCategory=20)
+barplot(egoBP, drop=TRUE, showCategory=10, col=color)
 dev.off()
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.BP_dotplot.png", sep=""))
 png(fileName)
-dotplot(egoBP,color="qvalue")
+dotplot(egoBP,color=color)
 dev.off()
 
 # calcolo ed esporto i Molecular Function
@@ -248,12 +258,12 @@ fwrite(x=egoMF_sort, file = outfile_egoMF)
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_GO.MF_barplot.png", sep=""))
 png(fileName)
-barplot(egoMF,drop=TRUE,showCategory=25)
+barplot(egoMF,drop=TRUE,showCategory=12, col=color)
 dev.off()
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_dotplot.png", sep=""))
 png(fileName)
-dotplot(egoMF,color="p.adjust")
+dotplot(egoMF,color=color)
 dev.off()
 
 fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_map.png", sep=""))
@@ -266,6 +276,16 @@ dev.off()
 fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.MF_graph.png", sep=""))
 png(fileName)
 plotGOgraph(egoMF)
+dev.off()
+
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.CC_graph.png", sep=""))
+png(fileName)
+plotGOgraph(egoCC)
+dev.off()
+
+fileName <- file.path(prjfolder, outfolder, paste(species, "_eGO.BP_graph.png", sep=""))
+png(fileName)
+plotGOgraph(egoBP)
 dev.off()
 
 ############### END ###############
