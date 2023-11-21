@@ -8,4 +8,4 @@ GO, enrichment and pathway analysis are highly complex types of analysis, that r
 Therefore, there are usually multiple ways to do the same thing, and there may be multiple points of entry (e.g. input data) that may require preprocessing and conversion steps.
 We will try to document and comment steps, operations and scripts in the best possible way, trying to trace as much as possible scripts that must follow in a logical succession of steps.
 
-Details can be found in our [wiki]()
+Details can be found in our [wiki](wiki/)
