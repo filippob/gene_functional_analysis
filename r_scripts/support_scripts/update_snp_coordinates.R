@@ -20,8 +20,9 @@ if (length(args) >= 1) {
     #base_folder = '~/Documents/SMARTER/Analysis/hrr/',
     #genotypes = "Analysis/hrr/goat_thin.ped",
     basefolder = "/home/filippo/Documents/salvo/val_belice/GWAS",
-    inpfile = "paper/significant_snps.csv",
-    outfile = "paper/significant_snps.bed",
+    inpbed = "paper/hglft_genome_1e659_cefc70.bed",
+    inpold = "paper/significant_snps.csv",
+    outfile = "paper/significant_snps.updated.csv",
     species = 'sheep',
     force_overwrite = FALSE
   ))
@@ -33,25 +34,27 @@ if (length(args) >= 1) {
 writeLines(' - current values of parameters')
 print(paste("species is:", config$species))
 print(paste("base folder is:", config$basefolder))
-print(paste("input file is:", config$inpfile))
+print(paste("input bed file is:", config$inpbed))
+print(paste("input snp file is:", config$inpold))
 print(paste("output file is:", config$outfile))
 
 
 ### reading data and converting format
 writeLines(" - reading snp data")
-fname = file.path(config$basefolder, config$inpfile)
+fname = file.path(config$basefolder, config$inpold)
 snps <- fread(fname)
 
-writeLines(" - converting to bed format")
-snps$Chrom <- paste("chr",snps$Chrom,sep="")
-snps <- snps |> 
-  dplyr::select(Chrom, Position) |>
-  mutate(start = Position-1) |>
-  relocate(Position, .after = start)
+writeLines(" - reading bed file")
+fname = file.path(config$basefolder, config$inpbed)
+bed <- fread(fname)
 
-writeLines(" - writing out converted file")
+## updating SNP position
+writeLines(" - updating SNP position")
+snps$Position <- bed$V2
+
+writeLines(" - writing out updated file")
 fname = file.path(config$basefolder, config$outfile)
-fwrite(x = snps, file = fname, col.names = FALSE, sep = "\t")
+fwrite(x = snps, file = fname)
 
 print("DONE!")
 
