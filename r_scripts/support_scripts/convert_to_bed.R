@@ -1,4 +1,6 @@
 
+## script to create bed file for liftover: https://genome.ucsc.edu/cgi-bin/hgLiftOver
+
 library("tidyverse")
 library("data.table")
 

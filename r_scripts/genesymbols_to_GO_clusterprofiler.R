@@ -5,7 +5,8 @@
 # BiocManager::install("clusterProfiler")
 
 # Rscript <genesymbols_to_GO_clusterprofiler> --projectfolder <project base folder path> --entrez_ids <geneEntrezList> --outfolder <outfolder> --species <species> --level <level> --color <variable_to_color_plots>
-  
+# Rscript gene_functional_analysis/r_scripts/genesymbols_to_GO_clusterprofiler.R --projectfolder /home/filippo/Documents/salvo/val_belice/GWAS --entrez_ids post_gwas/gwas_prolificity_sheep_genes.csv --outfolder post_gwas --species Sheep --level 3 --color pvalue
+
 library("clusterProfiler") ## v.3.18.0
 library("AnnotationHub")
 library("data.table")
@@ -46,7 +47,7 @@ level = opt$level
 color = opt$color
 
 # prjfolder = "/home/filippo/Documents/salvo/val_belice/GWAS"
-# infilename = "post_gwas/Sheep_EntrezIDs"
+# infilename = "post_gwas/gwas_prolificity_sheep_genes.csv"
 # species="Sheep"
 # outfolder ="post_gwas"
 # level=3
@@ -89,7 +90,7 @@ switch(species,
 # carico dal file le gene Entrez IDs
 fname = file.path(prjfolder, infilename)
 entrezIDs <- fread(file=fname)
-geneEntrezList <- unique(as.character(entrezIDs$geneEntrezList))
+geneEntrezList <- unique(as.character(entrezIDs$entrezgene_id))
 
 print("List of Entrez Gene Codes")
 print(geneEntrezList)
