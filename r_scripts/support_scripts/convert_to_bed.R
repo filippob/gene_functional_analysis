@@ -39,7 +39,8 @@ print(paste("output file is:", config$outfile))
 
 ### reading data and converting format
 writeLines(" - reading snp data")
-snps <- fread("GWAS/paper/significant_snps.csv")
+fname = file.path(config$basefolder, config$inpfile)
+snps <- fread(fname)
 
 writeLines(" - converting to bed format")
 snps$Chrom <- paste("chr",snps$Chrom,sep="")
@@ -48,7 +49,8 @@ snps <- snps |>
   mutate(end = Position+1)
 
 writeLines(" - writing out converted file")
-fwrite(x = snps, file = "GWAS/paper/significant_snps.bed", col.names = FALSE, sep = "\t")
+fname = file.path(config$basefolder, config$outfile)
+fwrite(x = snps, file = fname, col.names = FALSE, sep = "\t")
 
 print("DONE!")
 
