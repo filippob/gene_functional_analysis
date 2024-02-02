@@ -1,0 +1,54 @@
+
+library("tidyverse")
+library("data.table")
+
+args = commandArgs(trailingOnly=TRUE)
+if (length(args) >= 1) {
+  
+  #loading the parameters
+  source(args[1])
+  # source("Analysis/hrr/config.R")
+  
+} else {
+  #this is the default configuration, used for development and debug
+  writeLines('Using default config')
+  
+  #this dataframe should be always present in config files, and declared
+  #as follows
+  config = NULL
+  config = rbind(config, data.frame(
+    #base_folder = '~/Documents/SMARTER/Analysis/hrr/',
+    #genotypes = "Analysis/hrr/goat_thin.ped",
+    basefolder = "/home/filippo/Documents/salvo/val_belice/GWAS",
+    inpfile = "paper/significant_snps.csv",
+    outfile = "paper/significant_snps.bed",
+    species = 'sheep',
+    force_overwrite = FALSE
+  ))
+}
+
+#############
+# PARAMETERS
+#############
+writeLines(' - current values of parameters')
+print(paste("species is:", config$species))
+print(paste("base folder is:", config$basefolder))
+print(paste("input file is:", config$inpfile))
+print(paste("output file is:", config$outfile))
+
+
+### reading data and converting format
+writeLines(" - reading snp data")
+snps <- fread("GWAS/paper/significant_snps.csv")
+
+writeLines(" - converting to bed format")
+snps$Chrom <- paste("chr",snps$Chrom,sep="")
+snps <- snps |> 
+  dplyr::select(Chrom, Position) |>
+  mutate(end = Position+1)
+
+writeLines(" - writing out converted file")
+fwrite(x = snps, file = "GWAS/paper/significant_snps.bed", col.names = FALSE, sep = "\t")
+
+print("DONE!")
+
