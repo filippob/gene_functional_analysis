@@ -46,8 +46,8 @@ writeLines(" - converting to bed format")
 snps$Chrom <- paste("chr",snps$Chrom,sep="")
 snps <- snps |> 
   dplyr::select(Chrom, Position) |>
-  mutate(start = Position-1) |>
-  relocate(Position, .after = start)
+  mutate(end = Position+1) ## add 1 bp to get end position (this is the correct way, for SNP rs429585659 checked below
+                           ## https://www.ensembl.org/Ovis_aries/Variation/Explore?db=core;r=1:16765815-16766815;v=rs429585659;vdb=variation;vf=50615591)
 
 writeLines(" - writing out converted file")
 fname = file.path(config$basefolder, config$outfile)
